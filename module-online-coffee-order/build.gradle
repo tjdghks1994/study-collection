@@ -1,0 +1,4 @@
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc:3.3.3'
+    implementation 'mysql:mysql-connector-java:8.0.31'
+}
