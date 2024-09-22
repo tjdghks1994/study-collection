@@ -10,3 +10,12 @@ GET http://localhost:8080/api/v1/users/gender/male
 PUT http://localhost:8080/api/v1/users/1?name=kevin
 ### user delete
 DELETE http://localhost:8080/api/v1/users/1
+
+### upbit minute candle search
+GET http://localhost:8080/api/v1/candle/minute/60
+Content-Type: application/json
+
+{
+  "market": "KRW-BTC",
+  "count": 2
+}
