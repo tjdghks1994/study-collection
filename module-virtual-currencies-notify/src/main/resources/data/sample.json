@@ -1,0 +1,10 @@
+{
+  "name": "sunghwan.park",
+  "age": 31,
+  "address": "seoul",
+  "phoneNumber": "010-1234-5678",
+  "test" : {
+    "test1": "testA",
+    "test2": "testB"
+  }
+}

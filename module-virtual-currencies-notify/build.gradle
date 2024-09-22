@@ -1,4 +1,6 @@
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc:3.3.3'
     runtimeOnly('com.h2database:h2:2.1.214')
+    testCompileOnly 'org.projectlombok:lombok:1.18.34'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 }
