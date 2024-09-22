@@ -1,0 +1,12 @@
+### user create
+POST http://localhost:8080/api/v1/users?name=danny&gender=male
+### user create
+POST http://localhost:8080/api/v1/users?name=allie&gender=female
+### user create
+POST http://localhost:8080/api/v1/users?name=ben&gender=male
+### user findByGender
+GET http://localhost:8080/api/v1/users/gender/male
+### user updateName
+PUT http://localhost:8080/api/v1/users/1?name=kevin
+### user delete
+DELETE http://localhost:8080/api/v1/users/1
