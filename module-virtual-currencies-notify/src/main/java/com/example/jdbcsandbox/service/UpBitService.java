@@ -2,6 +2,7 @@ package com.example.jdbcsandbox.service;
 
 import com.example.jdbcsandbox.controller.MinuteCandleRequest;
 import com.example.jdbcsandbox.http.HttpClient;
+import com.example.jdbcsandbox.http.UpBitFeignClient;
 import com.example.jdbcsandbox.http.UpBitMinuteCandle;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -19,10 +20,12 @@ import java.util.stream.Collectors;
 @Service
 public class UpBitService {
     private final HttpClient httpClient;
+    private final UpBitFeignClient upBitFeignClient;
     private final ObjectMapper objectMapper;
 
-    public UpBitService(HttpClient httpClient, ObjectMapper objectMapper) {
+    public UpBitService(HttpClient httpClient, UpBitFeignClient upBitFeignClient, ObjectMapper objectMapper) {
         this.httpClient = httpClient;
+        this.upBitFeignClient = upBitFeignClient;
         this.objectMapper = new ObjectMapper();
     }
 
@@ -43,11 +46,14 @@ public class UpBitService {
 
         // call
         String result = httpClient.getData(uri, HttpMethod.GET, httpHeaders);
+        String feignResult = upBitFeignClient.getMinuteCandle(unit, request.getMarket(), request.getCount());
 
         List<UpBitMinuteCandle> upBitMinuteCandles =
                 objectMapper.readValue(result, new TypeReference<List<UpBitMinuteCandle>>() {});
+        List<UpBitMinuteCandle> feignUpBitMinuteCandles =
+                objectMapper.readValue(feignResult, new TypeReference<List<UpBitMinuteCandle>>() {});
 
-        return upBitMinuteCandles.stream().map(it -> MinuteCandle.builder()
+        return feignUpBitMinuteCandles.stream().map(it -> MinuteCandle.builder()
                 .market(it.getMarket())
                 .candleDateTimeUtc(it.getCandleDateTimeUtc())
                 .candleDateTimeKst(it.getCandleDateTimeKst())
