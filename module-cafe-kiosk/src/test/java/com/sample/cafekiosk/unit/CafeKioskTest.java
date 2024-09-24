@@ -4,6 +4,7 @@ import com.sample.cafekiosk.unit.beverage.Americano;
 import com.sample.cafekiosk.unit.beverage.Latte;
 import com.sample.cafekiosk.unit.order.Order;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CafeKioskTest {
 
     @Test
+
     void add_manual_test() {
         CafeKiosk cafeKiosk = new CafeKiosk();
         cafeKiosk.add(new Americano());
@@ -23,6 +25,14 @@ class CafeKioskTest {
     }
 
     @Test
+//    @DisplayName("음료 1개 추가 테스트")
+    // DisplayName은 섬세하게 작성하자
+    // - 명사의 나열보다는 문장 형태로 작성해라
+    // - 테스트 행위에 대한 결과까지 기술해라
+    // - 도메인 용어를 사용하여 한층 추상화된 내용들 담자
+    // - 테스트의 현상을 중점으로 기술하지 말아라 ( ex - 성공한다, 실패한다 등 )
+    @DisplayName("음료 1개를 추가하면 주문 목록에 담긴다.")
+    // 만약 Junit5가 아니라면 메서드명을 한글로 활용해라
     void add() {
         CafeKiosk cafeKiosk = new CafeKiosk();
         cafeKiosk.add(new Americano());
@@ -78,6 +88,20 @@ class CafeKioskTest {
 
         cafeKiosk.clear();
         assertThat(cafeKiosk.getBeverages()).isEmpty();
+    }
+
+    @Test
+    void calculateTotalPrice() {
+        CafeKiosk cafeKiosk = new CafeKiosk();
+        Americano americano = new Americano();
+        Latte latte = new Latte();
+
+        cafeKiosk.add(americano);
+        cafeKiosk.add(latte);
+
+        int totalPrice = cafeKiosk.calculateTotalPrice();
+
+        assertThat(totalPrice).isEqualTo(americano.getPrice()+latte.getPrice());
     }
 
     @Test
