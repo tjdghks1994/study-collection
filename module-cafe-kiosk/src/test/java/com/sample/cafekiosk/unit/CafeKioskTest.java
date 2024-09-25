@@ -77,6 +77,24 @@ class CafeKioskTest {
     }
 
     @Test
+    @DisplayName("주문 목록에 담긴 상품들의 총 금액을 계산할 수 있다.")
+    void calculateTotalPrice() {
+        // given - 시나리오에 필요한 모든 준비 과정 ( 객체, 값, 상태 .. )
+        CafeKiosk cafeKiosk = new CafeKiosk();
+        Americano americano = new Americano();
+        Latte latte = new Latte();
+
+        cafeKiosk.add(americano);
+        cafeKiosk.add(latte);
+
+        // when - 시나리오 행동 진행
+        int totalPrice = cafeKiosk.calculateTotalPrice();
+
+        // then - 시나리오 진행에 대한 결과 명시, 검증
+        assertThat(totalPrice).isEqualTo(americano.getPrice()+latte.getPrice());
+    }
+
+    @Test
     void clear() {
         CafeKiosk cafeKiosk = new CafeKiosk();
         Americano americano = new Americano();
@@ -88,20 +106,6 @@ class CafeKioskTest {
 
         cafeKiosk.clear();
         assertThat(cafeKiosk.getBeverages()).isEmpty();
-    }
-
-    @Test
-    void calculateTotalPrice() {
-        CafeKiosk cafeKiosk = new CafeKiosk();
-        Americano americano = new Americano();
-        Latte latte = new Latte();
-
-        cafeKiosk.add(americano);
-        cafeKiosk.add(latte);
-
-        int totalPrice = cafeKiosk.calculateTotalPrice();
-
-        assertThat(totalPrice).isEqualTo(americano.getPrice()+latte.getPrice());
     }
 
     @Test
