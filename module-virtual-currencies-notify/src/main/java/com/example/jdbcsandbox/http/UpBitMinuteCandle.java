@@ -2,8 +2,10 @@ package com.example.jdbcsandbox.http;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class UpBitMinuteCandle {
     private String market;
     @JsonProperty("candle_date_time_utc")

@@ -15,8 +15,17 @@ spring:
     hibernate:
       ddl-auto: create-drop
     defer-datasource-initialization: true
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
 
   h2:
     console:
       path: /h2-console
       enabled: true
+
+  batch:
+    job:
+      enabled: true
+      name: ${job.name:NONE}
