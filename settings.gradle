@@ -2,3 +2,4 @@ rootProject.name = 'multi-module-study'
 include("module-cafe-kiosk")
 include("module-online-coffee-order")
 include("module-virtual-currencies-notify")
+include("module-crypto-automation")
