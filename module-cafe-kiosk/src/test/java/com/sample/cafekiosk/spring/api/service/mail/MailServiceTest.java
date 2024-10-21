@@ -7,10 +7,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.util.Assert;
 
@@ -40,8 +37,11 @@ class MailServiceTest {
 
 //        MailService mailService = new MailService(mailSendClient, mailSendHistoryRepository);
 
-        when(mailSendClient.sendEmail(anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(true);
+//        when(mailSendClient.sendEmail(anyString(), anyString(), anyString(), anyString()))
+//                .thenReturn(true);
+        // BDD 스타일로 작성 - 내부 동작은 Mockito 와 동일
+        BDDMockito.given(mailSendClient.sendEmail(anyString(), anyString(), anyString(), anyString()))
+                .willReturn(true);
 
         // when
         boolean result = mailService.sendMail("", "", "", "");
