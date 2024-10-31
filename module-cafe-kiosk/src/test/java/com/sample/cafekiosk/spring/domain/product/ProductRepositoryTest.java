@@ -1,5 +1,7 @@
 package com.sample.cafekiosk.spring.domain.product;
 
+import com.sample.cafekiosk.spring.IntegrationTestSupport;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +15,13 @@ import static com.sample.cafekiosk.spring.domain.product.ProductSellingStatus.*;
 import static com.sample.cafekiosk.spring.domain.product.ProductType.*;
 import static org.assertj.core.api.Assertions.*;
 
-@ActiveProfiles("test")
-@SpringBootTest
-@Transactional
-//@DataJpaTest
-class ProductRepositoryTest {
+
+class ProductRepositoryTest extends IntegrationTestSupport {
+
+    @AfterEach
+    void tearDown() {
+        repository.deleteAllInBatch();
+    }
 
     @Autowired
     private ProductRepository repository;

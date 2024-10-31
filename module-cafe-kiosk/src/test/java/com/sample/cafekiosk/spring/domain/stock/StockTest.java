@@ -57,14 +57,14 @@ class StockTest {
 
     }
 
-    @DisplayName("")
+    @DisplayName("dynamicTest")
     @TestFactory
     Collection<DynamicTest> dynamicTest() {
         return List.of(
-                DynamicTest.dynamicTest("",()->{
+                DynamicTest.dynamicTest("dynamicTest1",()->{
 
                 }),
-                DynamicTest.dynamicTest("",()->{
+                DynamicTest.dynamicTest("dynamicTest2",()->{
 
                 })
         );

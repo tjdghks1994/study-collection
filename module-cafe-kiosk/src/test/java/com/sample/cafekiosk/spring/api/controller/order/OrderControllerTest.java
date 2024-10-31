@@ -1,6 +1,7 @@
 package com.sample.cafekiosk.spring.api.controller.order;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sample.cafekiosk.spring.ControllerTestSupport;
 import com.sample.cafekiosk.spring.api.controller.order.request.OrderCreateRequest;
 import com.sample.cafekiosk.spring.api.service.order.OrderService;
 import org.junit.jupiter.api.DisplayName;
@@ -18,15 +19,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@WebMvcTest(controllers = OrderController.class)
-class OrderControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @MockBean
-    private OrderService orderService;
+class OrderControllerTest extends ControllerTestSupport {
 
     @DisplayName("신규 주문을 등록한다.")
     @Test
