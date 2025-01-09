@@ -3,62 +3,66 @@ package com.fastcampus.board.service;
 import com.fastcampus.board.model.Post;
 import com.fastcampus.board.model.PostPatchRequestBody;
 import com.fastcampus.board.model.PostPostRequestBody;
+import com.fastcampus.board.model.entity.PostEntity;
+import com.fastcampus.board.repository.PostEntityRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class PostService {
 
-    private static final List<Post> posts = new ArrayList<>();
+    private final PostEntityRepository postEntityRepository;
 
-    static {
-        posts.add(new Post(1L, "Post 1", ZonedDateTime.now()));
-        posts.add(new Post(2L, "Post 2", ZonedDateTime.now()));
-        posts.add(new Post(3L, "Post 3", ZonedDateTime.now()));
+    public PostService(PostEntityRepository postEntityRepository) {
+        this.postEntityRepository = postEntityRepository;
     }
 
     public List<Post> getPosts() {
-        return posts;
+        return postEntityRepository.findAll().stream()
+                .map(Post::from)
+                .collect(Collectors.toList());
     }
 
-    public Optional<Post> getPostById(Long postId) {
-        return posts.stream().filter(post -> postId.equals(post.getPostId())).findFirst();
+    public Post getPostById(Long postId) {
+        var postEntity = postEntityRepository.findById(postId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found.")
+        );
+
+        return Post.from(postEntity);
     }
 
+    @Transactional
     public Post createPost(PostPostRequestBody request) {
-        var newPostId = posts.stream().mapToLong(Post::getPostId).max().orElse(0L) + 1;
+        var postEntity = new PostEntity();
+        postEntity.setBody(request.body());
+        var saveEntity = postEntityRepository.save(postEntity);
 
-        var newPost = new Post(newPostId, request.body(), ZonedDateTime.now());
-        posts.add(newPost);
-
-        return newPost;
+        return Post.from(saveEntity);
     }
 
+    @Transactional
     public Post updatePost(Long postId, PostPatchRequestBody body) {
-        var postOptional = posts.stream().filter(post -> postId.equals(post.getPostId())).findFirst();
+        var postEntity = postEntityRepository.findById(postId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found.")
+        );
 
-        if (postOptional.isPresent()) {
-            var post = postOptional.get();
-            post.setBody(body.body());
-            return post;
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found.");
-        }
+        postEntity.setBody(body.body());
+
+        return Post.from(postEntity);
     }
 
+    @Transactional
     public void deletePost(Long postId) {
-        var postOptional = posts.stream().filter(post -> postId.equals(post.getPostId())).findFirst();
+        var postEntity = postEntityRepository.findById(postId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found.")
+        );
 
-        if (postOptional.isPresent()) {
-            posts.remove(postOptional.get());
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found.");
-        }
+        postEntityRepository.delete(postEntity);
     }
 }

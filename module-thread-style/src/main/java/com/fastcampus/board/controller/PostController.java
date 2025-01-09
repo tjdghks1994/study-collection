@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/posts")
@@ -29,10 +28,9 @@ public class PostController {
 
     @GetMapping("/{postId}")
     public ResponseEntity<Post> getPostById(@PathVariable Long postId){
-        Optional<Post> matchingPost = postService.getPostById(postId);
+        var post = postService.getPostById(postId);
 
-        return matchingPost.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(post);
     }
 
     @PostMapping
