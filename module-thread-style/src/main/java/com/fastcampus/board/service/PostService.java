@@ -1,14 +1,13 @@
 package com.fastcampus.board.service;
 
+import com.fastcampus.board.exception.post.PostNotFoundException;
 import com.fastcampus.board.model.Post;
 import com.fastcampus.board.model.PostPatchRequestBody;
 import com.fastcampus.board.model.PostPostRequestBody;
 import com.fastcampus.board.model.entity.PostEntity;
 import com.fastcampus.board.repository.PostEntityRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,7 +30,7 @@ public class PostService {
 
     public Post getPostById(Long postId) {
         var postEntity = postEntityRepository.findById(postId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found.")
+                () -> new PostNotFoundException(postId)
         );
 
         return Post.from(postEntity);
@@ -49,7 +48,7 @@ public class PostService {
     @Transactional
     public Post updatePost(Long postId, PostPatchRequestBody body) {
         var postEntity = postEntityRepository.findById(postId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found.")
+                () -> new PostNotFoundException(postId)
         );
 
         postEntity.setBody(body.body());
@@ -60,7 +59,7 @@ public class PostService {
     @Transactional
     public void deletePost(Long postId) {
         var postEntity = postEntityRepository.findById(postId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found.")
+                () -> new PostNotFoundException(postId)
         );
 
         postEntityRepository.delete(postEntity);

@@ -22,6 +22,10 @@ spring:
       name: board-admin
       password: board-admin-password
 
+logging:
+  level:
+    # TRACE < DEBUG < INFO < WARN < ERROR
+    root: INFO
 #logging:
 #  level:
 #    org.hibernate.type: TRACE
