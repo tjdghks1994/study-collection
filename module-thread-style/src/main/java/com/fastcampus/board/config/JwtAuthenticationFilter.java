@@ -33,7 +33,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // JWT 검증
         String BearerPrefix = "Bearer ";
         var authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         var securityContext = SecurityContextHolder.getContext();
@@ -43,14 +42,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throw new JwtTokenNotFoundException();
         }
 
+        // JWT 검증
         if (!ObjectUtils.isEmpty(authorization)
                 && authorization.startsWith(BearerPrefix)
                 && securityContext.getAuthentication() == null) {
-
+            // Authorization 헤더에서 토큰 값만 추출
             var accessToken = authorization.substring(BearerPrefix.length());
+            // accessToken 값으로 사용자 명 추출
             String username = jwtService.getUsername(accessToken);
+            // 사용자 명으로 사용자 정보 조회
             var userDetails = userService.loadUserByUsername(username);
 
+            // 시큐리티 컨텍스트에 설정
             var authenticationToken = new UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.getAuthorities()
             );

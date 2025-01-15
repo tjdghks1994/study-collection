@@ -22,7 +22,8 @@ public class WebConfiguration {
     private final JwtExceptionFilter jwtExceptionFilter;
 
     @Autowired
-    public WebConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter, JwtExceptionFilter jwtExceptionFilter) {
+    public WebConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter,
+                            JwtExceptionFilter jwtExceptionFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.jwtExceptionFilter = jwtExceptionFilter;
     }
@@ -47,8 +48,8 @@ public class WebConfiguration {
                 .sessionManagement(
                         (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(CsrfConfigurer::disable)          // csrf 비활성화
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtExceptionFilter, jwtAuthenticationFilter.getClass())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)   // JWT 검증 필터 추가
+                .addFilterBefore(jwtExceptionFilter, jwtAuthenticationFilter.getClass())    // JWT 예외 필터 추가
                 .httpBasic(Customizer.withDefaults());  // basic auth 사용
 
         return httpSecurity.build();
