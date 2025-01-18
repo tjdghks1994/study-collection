@@ -43,7 +43,9 @@ public class WebConfiguration {
     SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors(Customizer.withDefaults())
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(HttpMethod.POST, "/api/v1/users")
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/v1/users",
+                                "/api/v1/users/authenticate")
                         .permitAll()    // 위 requestMatchers 패턴에 해당하는 url 은 인증 해제
                         .anyRequest()   // 그 외 모든 요청에 인증 처리
                         .authenticated())
