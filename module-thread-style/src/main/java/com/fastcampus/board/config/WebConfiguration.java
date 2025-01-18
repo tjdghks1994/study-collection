@@ -1,8 +1,8 @@
 package com.fastcampus.board.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -21,7 +21,6 @@ public class WebConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
 
-    @Autowired
     public WebConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter,
                             JwtExceptionFilter jwtExceptionFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
@@ -41,9 +40,13 @@ public class WebConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors(Customizer.withDefaults())
-                .authorizeHttpRequests((requests) -> requests.anyRequest().authenticated()) // 모든 요청에 인증 처리
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers(HttpMethod.POST, "/api/v1/users")
+                        .permitAll()    // 위 requestMatchers 패턴에 해당하는 url 은 인증 해제
+                        .anyRequest()   // 그 외 모든 요청에 인증 처리
+                        .authenticated())
                 // rest api 이므로 세션 비활성화
                 .sessionManagement(
                         (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
