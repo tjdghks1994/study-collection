@@ -1,8 +1,8 @@
 package com.fastcampus.board.controller;
 
-import com.fastcampus.board.model.Post;
-import com.fastcampus.board.model.PostPatchRequestBody;
-import com.fastcampus.board.model.PostPostRequestBody;
+import com.fastcampus.board.model.post.Post;
+import com.fastcampus.board.model.post.PostPatchRequestBody;
+import com.fastcampus.board.model.post.PostPostRequestBody;
 import com.fastcampus.board.service.PostService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

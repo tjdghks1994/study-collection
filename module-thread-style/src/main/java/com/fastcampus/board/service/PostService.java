@@ -1,9 +1,9 @@
 package com.fastcampus.board.service;
 
 import com.fastcampus.board.exception.post.PostNotFoundException;
-import com.fastcampus.board.model.Post;
-import com.fastcampus.board.model.PostPatchRequestBody;
-import com.fastcampus.board.model.PostPostRequestBody;
+import com.fastcampus.board.model.post.Post;
+import com.fastcampus.board.model.post.PostPatchRequestBody;
+import com.fastcampus.board.model.post.PostPostRequestBody;
 import com.fastcampus.board.model.entity.PostEntity;
 import com.fastcampus.board.repository.PostEntityRepository;
 import org.springframework.stereotype.Service;
