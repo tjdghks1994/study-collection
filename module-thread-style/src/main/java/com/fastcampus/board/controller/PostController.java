@@ -1,5 +1,6 @@
 package com.fastcampus.board.controller;
 
+import com.fastcampus.board.model.entity.UserEntity;
 import com.fastcampus.board.model.post.Post;
 import com.fastcampus.board.model.post.PostPatchRequestBody;
 import com.fastcampus.board.model.post.PostPostRequestBody;
@@ -7,6 +8,7 @@ import com.fastcampus.board.service.PostService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,25 +42,35 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<Post> createPost(@RequestBody PostPostRequestBody body){
+    public ResponseEntity<Post> createPost(
+            @RequestBody PostPostRequestBody body,
+            Authentication authentication
+    ){
         log.info("POST /api/v1/posts");
-        var post = postService.createPost(body);
+        var post = postService.createPost(body, (UserEntity) authentication.getPrincipal());
 
         return ResponseEntity.ok(post);
     }
 
     @PatchMapping("/{postId}")
-    public ResponseEntity<Post> updatePost(@PathVariable Long postId, @RequestBody PostPatchRequestBody body){
+    public ResponseEntity<Post> updatePost(
+            @PathVariable Long postId,
+            @RequestBody PostPatchRequestBody body,
+            Authentication authentication
+    ){
         log.info("PATCH /api/v1/posts/{}", postId);
-        var updatePost = postService.updatePost(postId, body);
+        var updatePost = postService.updatePost(postId, body, (UserEntity) authentication.getPrincipal());
 
         return ResponseEntity.ok(updatePost);
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long postId){
+    public ResponseEntity<Void> deletePost(
+            @PathVariable Long postId,
+            Authentication authentication
+    ){
         log.info("DELETE /api/v1/posts/{}", postId);
-        postService.deletePost(postId);
+        postService.deletePost(postId, (UserEntity) authentication.getPrincipal());
 
         return ResponseEntity.noContent().build();
     }

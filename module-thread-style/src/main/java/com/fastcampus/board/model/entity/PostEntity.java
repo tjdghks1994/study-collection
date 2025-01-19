@@ -7,8 +7,13 @@ import org.hibernate.annotations.SQLRestriction;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
+import static jakarta.persistence.FetchType.*;
+
 @Entity
-@Table(name = "post")
+@Table(
+    name = "post",
+    indexes = {@Index(name = "post_userid_idx", columnList = "userid")}
+)
 @SQLDelete(sql = "UPDATE \"post\" SET deleteddatetime = CURRENT_TIMESTAMP WHERE postid = ?")
 @SQLRestriction("deleteddatetime IS NULL")
 public class PostEntity {
@@ -24,6 +29,17 @@ public class PostEntity {
     private ZonedDateTime updatedDateTime;
     @Column
     private ZonedDateTime deletedDateTime;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "userId")
+    private UserEntity user;
+
+    public static PostEntity of(String body, UserEntity user) {
+        var postEntity = new PostEntity();
+        postEntity.setBody(body);
+        postEntity.setUser(user);
+
+        return postEntity;
+    }
 
     public Long getPostId() {
         return postId;
@@ -65,6 +81,14 @@ public class PostEntity {
         this.deletedDateTime = deletedDateTime;
     }
 
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -73,12 +97,14 @@ public class PostEntity {
                 && Objects.equals(getBody(), that.getBody())
                 && Objects.equals(getCreatedDateTime(), that.getCreatedDateTime())
                 && Objects.equals(getUpdatedDateTime(), that.getUpdatedDateTime())
-                && Objects.equals(getDeletedDateTime(), that.getDeletedDateTime());
+                && Objects.equals(getDeletedDateTime(), that.getDeletedDateTime())
+                && Objects.equals(getUser(), that.getUser());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPostId(), getBody(), getCreatedDateTime(), getUpdatedDateTime(), getDeletedDateTime());
+        return Objects.hash(getPostId(), getBody(), getCreatedDateTime(),
+                getUpdatedDateTime(), getDeletedDateTime(), getUser());
     }
 
     @PrePersist

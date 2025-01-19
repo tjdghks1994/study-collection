@@ -1,6 +1,8 @@
 package com.fastcampus.board.service;
 
 import com.fastcampus.board.exception.post.PostNotFoundException;
+import com.fastcampus.board.exception.user.UserNotAllowedException;
+import com.fastcampus.board.model.entity.UserEntity;
 import com.fastcampus.board.model.post.Post;
 import com.fastcampus.board.model.post.PostPatchRequestBody;
 import com.fastcampus.board.model.post.PostPostRequestBody;
@@ -37,19 +39,23 @@ public class PostService {
     }
 
     @Transactional
-    public Post createPost(PostPostRequestBody request) {
-        var postEntity = new PostEntity();
-        postEntity.setBody(request.body());
-        var saveEntity = postEntityRepository.save(postEntity);
+    public Post createPost(PostPostRequestBody request, UserEntity currentUser) {
+        var saveEntity = postEntityRepository.save(
+                PostEntity.of(request.body(), currentUser)
+        );
 
         return Post.from(saveEntity);
     }
 
     @Transactional
-    public Post updatePost(Long postId, PostPatchRequestBody body) {
+    public Post updatePost(Long postId, PostPatchRequestBody body, UserEntity currentUser) {
         var postEntity = postEntityRepository.findById(postId).orElseThrow(
                 () -> new PostNotFoundException(postId)
         );
+
+        if (!postEntity.getUser().equals(currentUser)) {
+            throw new UserNotAllowedException();
+        }
 
         postEntity.setBody(body.body());
 
@@ -57,10 +63,14 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long postId) {
+    public void deletePost(Long postId, UserEntity currentUser) {
         var postEntity = postEntityRepository.findById(postId).orElseThrow(
                 () -> new PostNotFoundException(postId)
         );
+
+        if (!postEntity.getUser().equals(currentUser)) {
+            throw new UserNotAllowedException();
+        }
 
         postEntityRepository.delete(postEntity);
     }
