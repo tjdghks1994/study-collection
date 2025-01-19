@@ -41,6 +41,13 @@ public class PostController {
         return ResponseEntity.ok(post);
     }
 
+    @GetMapping("/users/{username}")
+    public ResponseEntity<List<Post>> getPostsByUsername(@PathVariable String username) {
+        var posts = postService.getPostsByUsername(username);
+
+        return ResponseEntity.ok(posts);
+    }
+
     @PostMapping
     public ResponseEntity<Post> createPost(
             @RequestBody PostPostRequestBody body,

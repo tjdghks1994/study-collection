@@ -1,18 +1,26 @@
 package com.fastcampus.board.service;
 
 import com.fastcampus.board.exception.user.UserAlreadyExistsException;
+import com.fastcampus.board.exception.user.UserNotAllowedException;
 import com.fastcampus.board.exception.user.UserNotFoundException;
 import com.fastcampus.board.model.entity.UserEntity;
 import com.fastcampus.board.model.user.User;
 import com.fastcampus.board.model.user.UserAuthenticationResponse;
+import com.fastcampus.board.model.user.UserPatchRequestBody;
 import com.fastcampus.board.repository.UserEntityRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class UserService implements UserDetailsService {
 
     private final UserEntityRepository userEntityRepository;
@@ -32,6 +40,7 @@ public class UserService implements UserDetailsService {
         );
     }
 
+    @Transactional
     public User signUp(String username, String password) {
         userEntityRepository.findByUsername(username)
                 .ifPresent((user) -> {
@@ -57,5 +66,41 @@ public class UserService implements UserDetailsService {
         } else {
             throw new UserNotFoundException(username);
         }
+    }
+
+    public List<User> getUsers(String query) {
+        List<UserEntity> userEntities;
+
+        if (query != null && !query.isBlank()) {
+            userEntities = userEntityRepository.findByUsernameContaining(query);
+        } else {
+            userEntities = userEntityRepository.findAll();
+        }
+
+        return userEntities.stream().map(User::from)
+                .collect(Collectors.toList());
+    }
+
+    public User getUser(String username) {
+        var userEntity = userEntityRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        return User.from(userEntity);
+    }
+
+    @Transactional
+    public User updateUser(String username, UserPatchRequestBody userPatchRequestBody, UserEntity currentUser) {
+        var userEntity = userEntityRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        if (!userEntity.equals(currentUser)) {
+            throw new UserNotAllowedException();
+        }
+
+        if (userPatchRequestBody.description() != null) {
+            userEntity.setDescription(userPatchRequestBody.description());
+        }
+
+        return User.from(userEntity);
     }
 }
