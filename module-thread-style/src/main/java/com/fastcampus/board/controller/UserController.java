@@ -18,10 +18,12 @@ import java.util.List;
 @RequestMapping("/api/v1/users")
 public class UserController {
     private final UserService userService;
+    private final PostService postService;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, PostService postService) {
         this.userService = userService;
+        this.postService = postService;
     }
 
     @GetMapping
@@ -39,6 +41,13 @@ public class UserController {
         var user = userService.getUser(username);
 
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/{username}/posts")
+    public ResponseEntity<List<Post>> getPostsByUsername(@PathVariable String username) {
+        var posts = postService.getPostsByUsername(username);
+
+        return ResponseEntity.ok(posts);
     }
 
     @PatchMapping("/{username}")
