@@ -1,24 +1,26 @@
-package com.fastcampus.board.model.post;
+package com.fastcampus.board.model.reply;
 
 import com.fastcampus.board.model.entity.PostEntity;
+import com.fastcampus.board.model.entity.ReplyEntity;
+import com.fastcampus.board.model.post.Post;
 import com.fastcampus.board.model.user.User;
 
 import java.time.ZonedDateTime;
 
-public record Post(
-        Long postId,
+public record Reply(
+        Long replyId,
         String body,
-        Long repliesCount,
         User user,
+        Post post,
         ZonedDateTime createdDateTime,
         ZonedDateTime updatedDateTime
 ) {
-    public static Post from(PostEntity entity) {
-        return new Post(
-                entity.getPostId(),
+    public static Reply from(ReplyEntity entity) {
+        return new Reply(
+                entity.getReplyId(),
                 entity.getBody(),
-                entity.getRepliesCount(),
                 User.from(entity.getUser()),
+                Post.from(entity.getPost()),
                 entity.getCreatedDateTime(),
                 entity.getUpdatedDateTime()
         );
