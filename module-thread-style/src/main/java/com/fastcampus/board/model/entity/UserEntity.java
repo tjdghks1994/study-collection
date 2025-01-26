@@ -32,6 +32,10 @@ public class UserEntity implements UserDetails {
     @Column
     private String description;
     @Column
+    private Long followersCount = 0L;
+    @Column
+    private Long followingsCount = 0L;
+    @Column
     private ZonedDateTime createdDateTime;
     @Column
     private ZonedDateTime updatedDateTime;
@@ -90,23 +94,44 @@ public class UserEntity implements UserDetails {
         return deletedDateTime;
     }
 
+    public Long getFollowersCount() {
+        return followersCount;
+    }
+
+    public void setFollowersCount(Long followersCount) {
+        this.followersCount = followersCount;
+    }
+
+    public Long getFollowingsCount() {
+        return followingsCount;
+    }
+
+    public void setFollowingsCount(Long followingsCount) {
+        this.followingsCount = followingsCount;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof UserEntity that)) return false;
-        return Objects.equals(getUserId(), that.getUserId())
-                && Objects.equals(getUsername(), that.getUsername())
-                && Objects.equals(getPassword(), that.getPassword())
-                && Objects.equals(getProfile(), that.getProfile())
-                && Objects.equals(getDescription(), that.getDescription())
-                && Objects.equals(getCreatedDateTime(), that.getCreatedDateTime())
-                && Objects.equals(getUpdatedDateTime(), that.getUpdatedDateTime())
-                && Objects.equals(getDeletedDateTime(), that.getDeletedDateTime());
+        return Objects.equals(getUserId(), that.getUserId()) &&
+                Objects.equals(getUsername(), that.getUsername()) &&
+                Objects.equals(getPassword(), that.getPassword()) &&
+                Objects.equals(getProfile(), that.getProfile()) &&
+                Objects.equals(getDescription(), that.getDescription()) &&
+                Objects.equals(getFollowersCount(), that.getFollowersCount()) &&
+                Objects.equals(getFollowingsCount(), that.getFollowingsCount()) &&
+                Objects.equals(getCreatedDateTime(), that.getCreatedDateTime()) &&
+                Objects.equals(getUpdatedDateTime(), that.getUpdatedDateTime()) &&
+                Objects.equals(getDeletedDateTime(), that.getDeletedDateTime());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUserId(), getUsername(), getPassword(), getProfile(), getDescription(), getCreatedDateTime(), getUpdatedDateTime(), getDeletedDateTime());
+        return Objects.hash(getUserId(), getUsername(), getPassword(),
+                getProfile(), getDescription(), getFollowersCount(),
+                getFollowingsCount(), getCreatedDateTime(),
+                getUpdatedDateTime(), getDeletedDateTime());
     }
 
     public void setDeletedDateTime(ZonedDateTime deletedDateTime) {
