@@ -9,6 +9,7 @@ public record Post(
         Long postId,
         String body,
         Long repliesCount,
+        Long likesCount,
         User user,
         ZonedDateTime createdDateTime,
         ZonedDateTime updatedDateTime
@@ -18,6 +19,7 @@ public record Post(
                 entity.getPostId(),
                 entity.getBody(),
                 entity.getRepliesCount(),
+                entity.getLikesCount(),
                 User.from(entity.getUser()),
                 entity.getCreatedDateTime(),
                 entity.getUpdatedDateTime()

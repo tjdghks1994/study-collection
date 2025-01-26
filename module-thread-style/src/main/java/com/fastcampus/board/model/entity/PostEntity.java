@@ -26,6 +26,8 @@ public class PostEntity {
     @Column
     private Long repliesCount = 0L;
     @Column
+    private Long likesCount = 0L;
+    @Column
     private ZonedDateTime createdDateTime;
     @Column
     private ZonedDateTime updatedDateTime;
@@ -99,6 +101,14 @@ public class PostEntity {
         this.user = user;
     }
 
+    public Long getLikesCount() {
+        return likesCount;
+    }
+
+    public void setLikesCount(Long likesCount) {
+        this.likesCount = likesCount;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -106,6 +116,7 @@ public class PostEntity {
         return Objects.equals(getPostId(), that.getPostId()) &&
                 Objects.equals(getBody(), that.getBody()) &&
                 Objects.equals(getRepliesCount(), that.getRepliesCount()) &&
+                Objects.equals(getLikesCount(), that.getLikesCount()) &&
                 Objects.equals(getCreatedDateTime(), that.getCreatedDateTime()) &&
                 Objects.equals(getUpdatedDateTime(), that.getUpdatedDateTime()) &&
                 Objects.equals(getDeletedDateTime(), that.getDeletedDateTime()) &&
@@ -114,8 +125,10 @@ public class PostEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPostId(), getBody(), getRepliesCount(),
-                getCreatedDateTime(), getUpdatedDateTime(), getDeletedDateTime(), getUser());
+        return Objects.hash(getPostId(), getBody(),
+                getRepliesCount(), getLikesCount(),
+                getCreatedDateTime(), getUpdatedDateTime(),
+                getDeletedDateTime(), getUser());
     }
 
     @PrePersist
