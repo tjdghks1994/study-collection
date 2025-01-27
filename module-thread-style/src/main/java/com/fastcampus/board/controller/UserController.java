@@ -2,8 +2,10 @@ package com.fastcampus.board.controller;
 
 import com.fastcampus.board.model.entity.UserEntity;
 import com.fastcampus.board.model.post.Post;
+import com.fastcampus.board.model.reply.Reply;
 import com.fastcampus.board.model.user.*;
 import com.fastcampus.board.service.PostService;
+import com.fastcampus.board.service.ReplyService;
 import com.fastcampus.board.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -19,11 +21,13 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final PostService postService;
+    private final ReplyService replyService;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    public UserController(UserService userService, PostService postService) {
+    public UserController(UserService userService, PostService postService, ReplyService replyService) {
         this.userService = userService;
         this.postService = postService;
+        this.replyService = replyService;
     }
 
     @GetMapping
@@ -72,7 +76,7 @@ public class UserController {
     }
 
     @GetMapping("/{username}/followers")
-    public ResponseEntity<List<User>> getFollowersByUser(
+    public ResponseEntity<List<Follower>> getFollowersByUser(
             @PathVariable String username,
             Authentication authentication
     ) {
@@ -89,6 +93,25 @@ public class UserController {
         var followings = userService.getFollowingsByUsername(username, (UserEntity) authentication.getPrincipal());
 
         return ResponseEntity.ok(followings);
+    }
+
+    @GetMapping("/{username}/liked-users")
+    public ResponseEntity<List<LikedUser>> getLikedUsersByUser(
+            @PathVariable String username,
+            Authentication authentication
+    ) {
+        var likedUsers = userService.getLikedUsersByUser(username, (UserEntity) authentication.getPrincipal());
+
+        return ResponseEntity.ok(likedUsers);
+    }
+
+    @GetMapping("/{username}/replies")
+    public ResponseEntity<List<Reply>> getRepliesByUser(
+            @PathVariable String username
+    ) {
+        var replies = replyService.getRepliesByUsername(username);
+
+        return ResponseEntity.ok(replies);
     }
 
     @PatchMapping("/{username}")

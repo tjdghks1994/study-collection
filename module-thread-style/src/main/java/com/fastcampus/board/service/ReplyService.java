@@ -92,4 +92,12 @@ public class ReplyService {
         postEntity.setRepliesCount(Math.max(0, postEntity.getRepliesCount() - 1));
     }
 
+    public List<Reply> getRepliesByUsername(String username) {
+        var userEntity = userEntityRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        var replyEntities = replyEntityRepository.findByUser(userEntity);
+
+        return replyEntities.stream().map(Reply::from).collect(Collectors.toList());
+    }
 }
