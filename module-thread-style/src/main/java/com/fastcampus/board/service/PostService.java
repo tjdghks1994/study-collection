@@ -35,18 +35,19 @@ public class PostService {
         this.likeEntityRepository = likeEntityRepository;
     }
 
-    public List<Post> getPosts() {
+    public List<Post> getPosts(UserEntity currentUser) {
+
         return postEntityRepository.findAll().stream()
-                .map(Post::from)
+                .map((p) -> getPostWithLikingStatus(p, currentUser))
                 .collect(Collectors.toList());
     }
 
-    public Post getPostById(Long postId) {
+    public Post getPostById(Long postId, UserEntity currentUser) {
         var postEntity = postEntityRepository.findById(postId).orElseThrow(
                 () -> new PostNotFoundException(postId)
         );
 
-        return Post.from(postEntity);
+        return getPostWithLikingStatus(postEntity, currentUser);
     }
 
     @Transactional
@@ -86,12 +87,12 @@ public class PostService {
         postEntityRepository.delete(postEntity);
     }
 
-    public List<Post> getPostsByUsername(String username) {
+    public List<Post> getPostsByUsername(String username, UserEntity currentUser) {
         var userEntity = userEntityRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
 
         return postEntityRepository.findByUser(userEntity).stream()
-                .map(Post::from).collect(Collectors.toList());
+                .map((p) -> getPostWithLikingStatus(p, currentUser)).collect(Collectors.toList());
     }
 
     @Transactional
@@ -105,11 +106,18 @@ public class PostService {
         if (likeEntity.isPresent()) {
             likeEntityRepository.delete(likeEntity.get());
             postEntity.setLikesCount(Math.max(0, postEntity.getLikesCount() - 1));
+            return Post.from(postEntity, false);
         } else {
             likeEntityRepository.save(LikeEntity.of(currentUser, postEntity));
             postEntity.setLikesCount(postEntity.getLikesCount() + 1);
+            return Post.from(postEntity, true);
         }
 
-        return Post.from(postEntity);
+    }
+
+    private Post getPostWithLikingStatus(PostEntity postEntity, UserEntity currentUser) {
+        var isLiking = likeEntityRepository.findByUserAndPost(currentUser, postEntity).isPresent();
+
+        return Post.from(postEntity, isLiking);
     }
 }
