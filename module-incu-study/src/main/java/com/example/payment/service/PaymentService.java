@@ -12,11 +12,11 @@ import java.util.List;
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
-//    private final PaymentClient paymentClient;
+    private final PaymentClient paymentClient;
 
-
-    public PaymentService(PaymentRepository paymentRepository) {
+    public PaymentService(PaymentRepository paymentRepository, PaymentClient paymentClient) {
         this.paymentRepository = paymentRepository;
+        this.paymentClient = paymentClient;
     }
 
     /**
@@ -43,20 +43,20 @@ public class PaymentService {
      *
      * @param uid 포트원 거래고유번호
      */
-//    @Transactional
-//    public void canclePayment(String uid) {
-//        // 외부 API로 결제 취소 요청
-//        String result = paymentClient.cancelPayment(uid);
-//
-//        if (result.contains("ERROR")) {
-//            throw new RuntimeException("Payment cancellation failed during recovery process");
-//        }
-//
-//        // impUid로 Payment 엔티티 조회
-//        Payment payment = paymentRepository.findByImpUid(uid)
-//                .orElseThrow(() -> new IllegalArgumentException("Payment not found with impUid : " + uid));
-//
-//        // status 필드를 "cancel"로 변경
-//        payment.setStatus("cancel");
-//    }
+    @Transactional
+    public void cancelPayment(String uid) {
+        // 외부 API로 결제 취소 요청
+        String result = paymentClient.cancelPayment(uid);
+
+        if (result.contains("ERROR")) {
+            throw new RuntimeException("Payment cancellation failed during recovery process");
+        }
+
+        // impUid로 Payment 엔티티 조회
+        Payment payment = paymentRepository.findByImpUid(uid)
+                .orElseThrow(() -> new IllegalArgumentException("Payment not found with impUid : " + uid));
+
+        // status 필드를 "cancel"로 변경
+        payment.setStatus("cancel");
+    }
 }

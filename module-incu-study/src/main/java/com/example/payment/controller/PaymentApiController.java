@@ -35,27 +35,21 @@ public class PaymentApiController {
      *
      * @return 모든 Payment 엔티티 리스트
      */
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<List<Payment>> getAllPayments() {
         List<Payment> payments = paymentService.getAllPayments();
         return ResponseEntity.ok(payments);
     }
 
-//    @GetMapping("/list")
-//    public ResponseEntity<List<Payment>> getPayments() {
-//        List<Payment> payments = paymentService.getAllPayments();   // 결제 데이터 가져오기
-//        return ResponseEntity.ok(payments);
-//    }
-//
 //    @GetMapping("/accessToken")
 //    public ResponseEntity<Map> getAccessToken() {
 //        Map accessToken = paymentService.getAccessToken();
 //        return ResponseEntity.ok(accessToken);
 //    }
-//
-//    @GetMapping("/cancle/{uid}")
-//    public ResponseEntity<String> canclePayment(@PathVariable("uid") String uid) {
-//        String accessToken = paymentService.canclePayment(uid);
-//        return ResponseEntity.ok(accessToken);
-//    }
+
+    @GetMapping("/cancel/{uid}")
+    public ResponseEntity<String> cancelPayment(@PathVariable("uid") String uid) {
+        paymentService.cancelPayment(uid);
+        return ResponseEntity.ok("Payment cancel processed successfully.");
+    }
 }

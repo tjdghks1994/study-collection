@@ -26,7 +26,8 @@ function paymentProcess() {
         if(isLogin){ // 회원만 결제 가능
             IMP.init("imp57343853"); // 가맹점 식별코드
             IMP.request_pay({
-                pg: 'kakaopay.TC0ONETIME', // PG사 코드표에서 선택
+                storeId: "store-08e3f617-d010-4017-9687-b843ac9e4635",
+                channelKey: "channel-key-d48361ec-9dae-4ee8-8d52-977f4fd4dfee",
                 pay_method: 'card', // 결제 방식
                 merchant_uid: "IMP" + generateMerchantUid(), // 결제 고유 번호
                 name: '독거미 키보드', // 제품명
