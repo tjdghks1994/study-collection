@@ -2,4 +2,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:3.3.3'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.3.3'
     implementation 'mysql:mysql-connector-java:8.0.31'
+    implementation 'org.springframework.retry:spring-retry:2.0.11'
+    implementation 'org.springframework:spring-aspects:6.2.1'
 }
