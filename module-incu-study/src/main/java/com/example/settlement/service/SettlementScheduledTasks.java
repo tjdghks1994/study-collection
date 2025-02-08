@@ -5,6 +5,7 @@ import com.example.payment.repository.PaymentRepository;
 import com.example.settlement.entity.Settlement;
 import com.example.settlement.repository.SettlementRepository;
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,7 @@ public class SettlementScheduledTasks {
     }
 
     @Scheduled(cron = "0 * * * * ?")
+    @SchedulerLock(name = "ScheduledTask_run")
     public void dailySettlement() {
         // 어제 날짜
         LocalDate yesterday = LocalDate.of(2024,9,6).minusDays(1);

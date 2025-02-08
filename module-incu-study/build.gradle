@@ -2,6 +2,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:3.3.3'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.3.3'
     implementation 'mysql:mysql-connector-java:8.0.31'
+    /* 외부 API 서버와의 통신 중 실패가 발생할 경우 재처리를 위해 라이브러리 추가 */
     implementation 'org.springframework.retry:spring-retry:2.0.11'
     implementation 'org.springframework:spring-aspects:6.2.1'
+    /* ShedLock 라이브러리의 핵심 및 데이터베이스 잠금 구현을 위한 모듈 제공 */
+    implementation 'net.javacrumbs.shedlock:shedlock-spring:5.10.0'
+    implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:5.10.0'
 }
