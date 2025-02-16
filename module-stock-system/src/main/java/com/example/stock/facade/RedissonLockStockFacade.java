@@ -19,7 +19,9 @@ public class RedissonLockStockFacade {
     }
 
     public void decrease(Long id, Long quantity) {
-        RLock lock = redissonClient.getLock(id.toString());
+        // 락 획득에 실패한 경우 재시도를 기본으로 제공하기 때문에
+        // 재시도 로직을 구현할 필요 없다
+        RLock lock = redissonClient.getLock(id.toString()); // 락 획득
 
         try {
             // 몇 초 동안 락 획득을 시도할 것인지, 몇 초 동안 점유할 것인지 설정
