@@ -1,0 +1,4 @@
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-devtools:3.3.3'
+    implementation 'org.springframework.boot:spring-boot-starter-security:3.3.3'
+}
