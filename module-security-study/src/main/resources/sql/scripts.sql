@@ -21,3 +21,16 @@ INSERT IGNORE INTO users
 VALUES ('admin', '{bcrypt}$2a$12$88.f6upbBvy0okEa70fHFuorV29qeK.sVbB9VQ6J6dWM1bW6Qef8m', '1');
 INSERT IGNORE INTO authorities
 VALUES ('admin', 'admin');
+
+create table customer (
+      id int NOT NULL AUTO_INCREMENT,
+      email varchar(45) NOT NULL,
+      pwd varchar(200) NOT NULL,
+      role varchar(45) NOT NULL,
+      PRIMARY KEY (id)
+);
+
+INSERT IGNORE INTO customer (email, pwd, role)
+VALUES ('happy@example.com', '{noop}EazyBytes@12345', 'read');
+INSERT IGNORE INTO customer (email, pwd, role)
+VALUES ('admin@example.com', '{bcrypt}$2a$12$88.f6upbBvy0okEa70fHFuorV29qeK.sVbB9VQ6J6dWM1bW6Qef8m', 'admin');
