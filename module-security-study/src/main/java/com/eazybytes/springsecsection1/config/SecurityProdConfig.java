@@ -19,7 +19,8 @@ public class SecurityProdConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.requiresChannel(rcc-> rcc.anyRequest().requiresSecure())   // https 만 허용
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards").authenticated() // 보안
                         .requestMatchers("/notices", "/contact", "/error", "/register").permitAll());  // 보안 해제
