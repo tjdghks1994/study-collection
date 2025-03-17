@@ -14,8 +14,8 @@ import org.springframework.security.web.authentication.password.HaveIBeenPwnedRe
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@Profile("!prod")
-public class SecurityConfig {
+@Profile("prod")
+public class SecurityProdConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -29,18 +29,6 @@ public class SecurityConfig {
 //        http.httpBasic(AbstractHttpConfigurer::disable);  // httpBasic 비활성화
         return http.build();
     }
-
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        UserDetails user = User.withUsername("user").password("{bcrypt}$2a$12$z0LNVUbjpa6dUSbpGeeaf.WTRLGRXk7bRbdxiKX3b8A9vzGPRizUi").authorities("read").build();
-//        UserDetails admin = User.withUsername("admin").password("{bcrypt}$2a$12$z0LNVUbjpa6dUSbpGeeaf.WTRLGRXk7bRbdxiKX3b8A9vzGPRizUi").authorities("admin").build();
-//
-//        return new InMemoryUserDetailsManager(user, admin);
-//    }
-//    @Bean
-//    public UserDetailsService userDetailsService(DataSource dataSource) {
-//        return new JdbcUserDetailsManager(dataSource);
-//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

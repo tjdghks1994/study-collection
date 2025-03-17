@@ -2,30 +2,40 @@ package com.eazybytes.springsecsection1.config;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile("!prod")   // 프로파일이 prod 가 아닌 모든 경우
-public class EazyBankUsernamePwdAuthenticationProvider implements AuthenticationProvider {
+@Profile("prod")    // 프로파일이 prod 인 경우
+public class EazyBankProdUsernamePwdAuthenticationProvider implements AuthenticationProvider {
 
     private final UserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
 
-    public EazyBankUsernamePwdAuthenticationProvider(UserDetailsService userDetailsService) {
+    public EazyBankProdUsernamePwdAuthenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String pwd = authentication.getCredentials().toString();
+
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        // 운영환경이 아닌 환경에서는 패스워드 검증을 하지 않음
-        return new UsernamePasswordAuthenticationToken(username, pwd, userDetails.getAuthorities());
+        if (passwordEncoder.matches(pwd, userDetails.getPassword())) {
+            // 추가 사용자 검증에 대한 사용자 정의 검증을 진행할 수 있다
+
+            return new UsernamePasswordAuthenticationToken(username, pwd, userDetails.getAuthorities());
+        } else {
+            throw new BadCredentialsException("Invalid password!");
+        }
     }
 
     @Override
