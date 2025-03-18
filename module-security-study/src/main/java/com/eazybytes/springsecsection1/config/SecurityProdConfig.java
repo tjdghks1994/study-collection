@@ -21,11 +21,16 @@ public class SecurityProdConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.requiresChannel(rcc-> rcc.anyRequest().requiresSecure())   // https 만 허용
+        http.sessionManagement(smc ->
+                        // 세션이 존재하지 않으면 설정된 url 로 이동
+                        // 동시 세션 제어를 위해 동시 세션은 최대 1개로만 설정
+                        // 만약 이미 유효한 세션으로 인증을 요청하게 되면 인증에 실패하도록 설정
+                        smc.invalidSessionUrl("/invalidSession").maximumSessions(1).maxSessionsPreventsLogin(true))
+                .requiresChannel(rcc-> rcc.anyRequest().requiresSecure())   // https 만 허용
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards").authenticated() // 보안
-                        .requestMatchers("/notices", "/contact", "/error", "/register").permitAll());  // 보안 해제
+                        .requestMatchers("/notices", "/contact", "/error", "/register","/invalidSession").permitAll());  // 보안 해제
         http.formLogin(withDefaults());
         http.httpBasic(
                 hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
