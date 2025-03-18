@@ -1,5 +1,7 @@
 package com.eazybytes.springsecsection1.config;
 
+import com.eazybytes.springsecsection1.exceptionhandling.CustomAccessDeniedHandler;
+import com.eazybytes.springsecsection1.exceptionhandling.CustomBasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -25,7 +27,9 @@ public class SecurityProdConfig {
                         .requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards").authenticated() // 보안
                         .requestMatchers("/notices", "/contact", "/error", "/register").permitAll());  // 보안 해제
         http.formLogin(withDefaults());
-        http.httpBasic(withDefaults());
+        http.httpBasic(
+                hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
+        http.exceptionHandling(ech -> ech.accessDeniedHandler(new CustomAccessDeniedHandler()));
 //        http.formLogin(AbstractHttpConfigurer::disable);  // formLogin 비활성화
 //        http.httpBasic(AbstractHttpConfigurer::disable);  // httpBasic 비활성화
         return http.build();
