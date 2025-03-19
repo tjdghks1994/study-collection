@@ -1,5 +1,6 @@
 package com.eazybytes.springsecsection1.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -9,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @Profile("!prod")   // 프로파일이 prod 가 아닌 모든 경우
 public class EazyBankUsernamePwdAuthenticationProvider implements AuthenticationProvider {
@@ -21,6 +23,7 @@ public class EazyBankUsernamePwdAuthenticationProvider implements Authentication
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        log.info("Authentication Provider authenticate for user = {}", authentication.getName());
         String username = authentication.getName();
         String pwd = authentication.getCredentials().toString();
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
