@@ -22,10 +22,12 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(smc ->
+                // 세션 고정 공격을 보호하기 위해 changeSessionId 방식 설정 ( 기본 설정 )
                 // 세션이 존재하지 않으면 설정된 url 로 이동
                 // 동시 세션 제어를 위해 동시 세션은 최대 3개로만 설정
                 // 만약 이미 유효한 세션으로 3개가 초과한 인증을 요청하게 되면 인증에 실패하도록 설정
-                        smc.invalidSessionUrl("/invalidSession").maximumSessions(3).maxSessionsPreventsLogin(true))
+                        smc.sessionFixation(sfc-> sfc.changeSessionId())
+                                .invalidSessionUrl("/invalidSession").maximumSessions(3).maxSessionsPreventsLogin(true))
                 .requiresChannel(rcc-> rcc.anyRequest().requiresInsecure()) // http 만 허용
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
